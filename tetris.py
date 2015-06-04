@@ -12,4 +12,13 @@ def print_game_board():
             sys.stdout.write(str(game_board[x][y]))
         print ""
 
+def init_game_board():
+    for y in range(0, 22):
+        for x in range(0, 14):
+            if x == 0 or x == 1 or x == 12 or x == 13 or y == 20 or y == 21:
+                game_board[x][y] = 1
+
+                
+    
+init_game_board()
 print_game_board()
