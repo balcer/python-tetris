@@ -4,10 +4,12 @@ import os
 import copy
 import pygame
 
-BOARD_X_SIZE=14
-BOARD_Y_SIZE=24
+BOARD_X_SIZE=10
+BOARD_Y_SIZE=22
 
 TIME_EVENT = pygame.USEREVENT+1
+
+game_board = [[0 for x in range(BOARD_Y_SIZE)] for x in range(BOARD_X_SIZE)]
 
 game_exit = False
 
@@ -15,6 +17,16 @@ pygame.init()
         
 gameDisplay = pygame.display.set_mode((800,600))
 pygame.display.set_caption('Tetris')
+
+def print_game_board():
+    pygame.draw.line(gameDisplay, (0, 0, 255), (20, 20), (20, 420), 1)
+    pygame.draw.line(gameDisplay, (0, 0, 255), (20, 420), (220, 420), 1)
+    pygame.draw.line(gameDisplay, (0, 0, 255), (220, 420), (220, 20), 1)
+    for y in range(BOARD_Y_SIZE):
+        for x in range(BOARD_X_SIZE):
+            if game_board[x][y] == 0 and y > 1:
+                pygame.draw.rect(gameDisplay, (255, 0 , 0), ((22*(x+1))-(x*2), (20*(y+1)-39), 18, 18), 1)
+    pygame.display.update()
 
 pygame.time.set_timer(TIME_EVENT, 1000)
 
@@ -35,11 +47,11 @@ while not game_exit:
                 print "Rotacja"
             elif event.key == pygame.K_ESCAPE:
                 game_exit = True
+    print_game_board()
 
 pygame.quit()
 quit()
 
-game_board = [[0 for x in range(BOARD_Y_SIZE)] for x in range(BOARD_X_SIZE)]
 temp_game_board = [[0 for x in range(BOARD_Y_SIZE)] for x in range(BOARD_X_SIZE)]
 actual_x_position = 4
 actual_y_position = 5
@@ -66,13 +78,6 @@ def screen_update():
     try_to_place_block(T_block, 5, 4)
     print_game_board()
     root.after(500, screen_update)
-
-def print_game_board():
-    os.system('clear')
-    for y in range(BOARD_Y_SIZE):
-        for x in range(BOARD_X_SIZE):
-            sys.stdout.write(str(temp_game_board[x][y]))
-        print ""
 
 def init_game_board():
     for y in range(BOARD_Y_SIZE):
