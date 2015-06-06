@@ -26,6 +26,17 @@ pygame.init()
 gameDisplay = pygame.display.set_mode((800,600))
 pygame.display.set_caption('Tetris')
 
+def start_new_round():
+    global game_board
+    global current_x_position
+    global current_y_position
+    for y in range(4):
+        for x in range(4):
+            if current_block[x][y] != 0:
+                game_board[current_x_position + x][current_y_position + y] = current_block[x][y]
+    current_x_position = 0
+    current_y_position = 3
+
 def print_game_board():
     gameDisplay.fill((0,0,0))
     pygame.draw.line(gameDisplay, (0, 0, 255), (20, 20), (20, 420), 1)
@@ -68,20 +79,22 @@ def try_to_place_block(action, brick):
             elif action == 3:
                 if brick[x][y] is not 0:
                     temp_game_board[x + current_x_position + 1][y + current_y_position] = brick[x][y]
-
     temp_border_count = 0
     for y in range(BOARD_Y_SIZE + 2):
         for x in range(BOARD_X_SIZE + 4):
             if temp_game_board[x][y] == 9:
                 temp_border_count = temp_border_count + 1
     if temp_border_count == 116:
-        print "Border OK"
         if action == 1:
             current_y_position = current_y_position + 1
         elif action == 2:
             current_x_position = current_x_position + 1
         elif action == 3:
             current_x_position = current_x_position - 1
+    else:
+        if action == 1:
+            start_new_round()
+
     print temp_game_board
 
 pygame.time.set_timer(TIME_EVENT, 1000)
