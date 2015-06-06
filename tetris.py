@@ -1,8 +1,6 @@
-import sys
-import time
-import os
 import pygame
 import copy
+
 BOARD_X_SIZE = 10
 BOARD_Y_SIZE = 22
 
@@ -14,10 +12,8 @@ I_block = [[0, 0, 2, 0],[0, 0, 2, 0],[0, 0, 3, 0],[0, 0, 2, 0],[0, 0, 0, 0]]
 T_block = [[0, 0, 0, 0],[0, 0, 2, 0],[0, 0, 3, 2],[0, 0, 2, 0],[0, 0, 0, 0]]
 
 current_block = T_block
-
 current_x_position = 0
 current_y_position = 3
-actual_rotation = 0
 
 game_exit = False
 
@@ -129,16 +125,3 @@ while not game_exit:
 
 pygame.quit()
 quit()
-
-def screen_update():
-    try_to_place_block(T_block, 5, 4)
-    print_game_board()
-    root.after(500, screen_update)
-
-def on_key_press(event):
-    pressed_key = event.char
-    if event.keysym == 'Escape':
-        root.quit()
-    text.insert('end', 'You pressed %s\n' % (event.char, ))
-
-
