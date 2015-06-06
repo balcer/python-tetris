@@ -1,15 +1,23 @@
 import sys
 import time
 import os
-import copy
 import pygame
-
-BOARD_X_SIZE=10
-BOARD_Y_SIZE=22
+import copy
+BOARD_X_SIZE = 10
+BOARD_Y_SIZE = 22
 
 TIME_EVENT = pygame.USEREVENT+1
 
 game_board = [[0 for x in range(BOARD_Y_SIZE)] for x in range(BOARD_X_SIZE)]
+
+I_block = [[0, 0, 2, 0],[0, 0, 2, 0],[0, 0, 3, 0],[0, 0, 2, 0],[0, 0, 0, 0]]
+T_block = [[0, 0, 0, 0],[0, 0, 2, 0],[0, 0, 3, 2],[0, 0, 2, 0],[0, 0, 0, 0]]
+
+current_block = T_block
+
+current_x_position = 0
+current_y_position = 3
+actual_rotation = 0
 
 game_exit = False
 
@@ -84,13 +92,17 @@ while not game_exit:
             game_exit = True
         if event.type == TIME_EVENT:
             print "Time"
+            try_to_place_block(1, current_block)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 print "Lewo"
+                try_to_place_block(3, current_block)
             elif event.key == pygame.K_RIGHT:
                 print "Prawo"
+                try_to_place_block(2, current_block)
             elif event.key == pygame.K_DOWN:
                 print "Dol"
+                try_to_place_block(1, current_block)
             elif event.key == pygame.K_SPACE:
                 print "Rotacja"
             elif event.key == pygame.K_ESCAPE:
