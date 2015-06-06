@@ -58,16 +58,19 @@ def try_to_place_block(action, brick):
     global current_x_position
     global current_y_position
     taken_places_count = 0
+    #Preparing temporary game board to check is move possible. Forbbiten places marked with 9
     temp_game_board = [[0 for x in range(BOARD_Y_SIZE + 2)] for x in range(BOARD_X_SIZE + 4)]
     for y in range(BOARD_Y_SIZE + 2):
         for x in range(BOARD_X_SIZE + 4):
             if x < 2 or x > 11 or y > 21:
                 temp_game_board[x][y] = 9
+    #Copping of actual game bord and counting taken places
     for y in range(BOARD_Y_SIZE):
         for x in range(BOARD_X_SIZE):
             temp_game_board[x+2][y] = game_board[x][y]
             if game_board[x][y] != 0:
                 taken_places_count = taken_places_count + 1
+    #Placing block in place according to event
     for y in range(4):
         for x in range(4):
             if action == 1:
@@ -79,12 +82,14 @@ def try_to_place_block(action, brick):
             elif action == 3:
                 if brick[x][y] is not 0:
                     temp_game_board[x + current_x_position + 1][y + current_y_position] = brick[x][y]
+    #Checking if performed move is correct
     temp_border_count = 0
     for y in range(BOARD_Y_SIZE + 2):
         for x in range(BOARD_X_SIZE + 4):
             if temp_game_board[x][y] == 9:
                 temp_border_count = temp_border_count + 1
     if temp_border_count == 116:
+    #Taking apropiate actions
         if action == 1:
             current_y_position = current_y_position + 1
         elif action == 2:
