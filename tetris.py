@@ -29,7 +29,7 @@ def start_new_round():
     for y in range(4):
         for x in range(4):
             if current_block[x][y] != 0:
-                game_board[current_x_position + x][current_y_position + y] = current_block[x][y]
+                game_board[current_x_position + x][current_y_position + y] = 8
     current_x_position = 0
     current_y_position = 3
 
@@ -64,7 +64,7 @@ def try_to_place_block(action, brick):
     for y in range(BOARD_Y_SIZE):
         for x in range(BOARD_X_SIZE):
             temp_game_board[x+2][y] = game_board[x][y]
-            if game_board[x][y] != 0:
+            if game_board[x][y] == 8:
                 taken_places_count = taken_places_count + 1
     #Placing block in place according to event
     for y in range(4):
@@ -80,11 +80,14 @@ def try_to_place_block(action, brick):
                     temp_game_board[x + current_x_position + 1][y + current_y_position] = brick[x][y]
     #Checking if performed move is correct
     temp_border_count = 0
+    temp_taken_places_count = 0
     for y in range(BOARD_Y_SIZE + 2):
         for x in range(BOARD_X_SIZE + 4):
             if temp_game_board[x][y] == 9:
                 temp_border_count = temp_border_count + 1
-    if temp_border_count == 116:
+            if temp_game_board[x][y] == 8:
+                temp_taken_places_count = temp_taken_places_count + 1
+    if temp_border_count == 116 and temp_taken_places_count == taken_places_count:
     #Taking apropiate actions
         if action == 1:
             current_y_position = current_y_position + 1
