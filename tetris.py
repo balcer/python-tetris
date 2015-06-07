@@ -1,5 +1,6 @@
 import pygame
 import copy
+import random
 
 BOARD_X_SIZE = 10
 BOARD_Y_SIZE = 22
@@ -16,16 +17,41 @@ L_block = [[0, 0, 0, 0],[0, 2, 2, 0],[0, 3, 0, 0],[0, 2, 0, 0]]
 J_block = [[0, 0, 0, 0],[0, 2, 0, 0],[0, 3, 0, 0],[0, 2, 2, 0]]
 T_block = [[0, 0, 0, 0],[0, 2, 0, 0],[0, 3, 2, 0],[0, 2, 0, 0]]
 
-current_block = T_block
-current_x_position = 0
-current_y_position = 3
+def pick_random_block():
+    a = random.randint(1,7)
+    if a == 1:
+        return O_block
+    elif a == 2:
+        return I_block
+    elif a == 3:
+        return S_block
+    elif a == 4:
+        return Z_block
+    elif a == 5:
+        return L_block
+    elif a == 6:
+        return J_block
+    elif a == 7:
+        return T_block
 
-game_exit = False
+def start_game():
+    #Game state variables
+    global current_x_position
+    global current_y_position
+    global game_exit
+    global gameDisplay
+    global current_block
+    global next_block
+    current_x_position = 2
+    current_y_position = 2
+    game_exit = False
+    gameDisplay = pygame.display.set_mode((800,600))
+    current_block = pick_random_block()
+    next_block = pick_random_block()
 
-pygame.init()
-        
-gameDisplay = pygame.display.set_mode((800,600))
-pygame.display.set_caption('Tetris')
+    pygame.init()
+    pygame.display.set_caption('Tetris')
+    pygame.time.set_timer(TIME_EVENT, 1000)
 
 def start_new_round():
     global game_board
@@ -35,8 +61,8 @@ def start_new_round():
         for x in range(4):
             if current_block[x][y] != 0:
                 game_board[current_x_position + x][current_y_position + y] = 8
-    current_x_position = 0
-    current_y_position = 3
+    current_x_position = 2
+    current_y_position = 2
 
 def print_game_board():
     gameDisplay.fill((0,0,0))
@@ -106,7 +132,7 @@ def try_to_place_block(action, brick):
 
     print temp_game_board
 
-pygame.time.set_timer(TIME_EVENT, 1000)
+start_game()
 
 while not game_exit:
     for event in pygame.event.get():
