@@ -18,7 +18,7 @@ J_block = [[0, 0, 0, 0],[0, 2, 0, 0],[0, 3, 0, 0],[0, 2, 2, 0]]
 T_block = [[0, 0, 0, 0],[0, 2, 0, 0],[0, 3, 2, 0],[0, 2, 0, 0]]
 
 def pick_random_block():
-    a = random.randint(1,7)
+    a = random.randint(1, 7)
     if a == 1:
         return O_block
     elif a == 2:
@@ -55,12 +55,16 @@ def start_game():
 
 def start_new_round():
     global game_board
+    global current_block
+    global next_block
     global current_x_position
     global current_y_position
     for y in range(4):
         for x in range(4):
             if current_block[x][y] != 0:
                 game_board[current_x_position + x][current_y_position + y] = 8
+    current_block = next_block
+    next_block = pick_random_block()
     current_x_position = 2
     current_y_position = 2
 
