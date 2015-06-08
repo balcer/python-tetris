@@ -45,13 +45,15 @@ def start_game():
     current_x_position = 2
     current_y_position = 2
     game_exit = False
-    gameDisplay = pygame.display.set_mode((800,600))
+    gameDisplay = pygame.display.set_mode((380, 445))
     current_block = pick_random_block()
     next_block = pick_random_block()
 
     pygame.init()
     pygame.display.set_caption('Tetris')
     pygame.time.set_timer(TIME_EVENT, 1000)
+    global game_font
+    game_font = pygame.font.SysFont("monospace", 18)
 
 def start_new_round():
     global game_board
@@ -70,6 +72,8 @@ def start_new_round():
 
 def print_game_board():
     gameDisplay.fill((0,0,0))
+    label = game_font.render("Next block:", 1, (255,255,255))
+    gameDisplay.blit(label, (240, 25))
     pygame.draw.line(gameDisplay, (0, 0, 255), (20, 20), (20, 420), 1)
     pygame.draw.line(gameDisplay, (0, 0, 255), (20, 420), (220, 420), 1)
     pygame.draw.line(gameDisplay, (0, 0, 255), (220, 420), (220, 20), 1)
@@ -81,7 +85,11 @@ def print_game_board():
     for y in range(BOARD_Y_SIZE):
         for x in range(BOARD_X_SIZE):
             if temp_game_board[x][y] != 0 and y > 1:
-                pygame.draw.rect(gameDisplay, (255, 0 , 0), ((22*(x+1))-(x*2), (20*(y+1)-39), 18, 18), 0)
+                pygame.draw.rect(gameDisplay, (255, 0, 0), ((22*(x+1))-(x*2), (20*(y+1)-39), 18, 18), 0)
+    for y in range(4):
+        for x in range(4):
+            if next_block[x][y] != 0:
+                pygame.draw.rect(gameDisplay, (255, 0, 0), ((225 + 22*(x+1))-(x*2), (20*(y+1) + 20), 18, 18), 0)
     pygame.display.update()
 
 def try_to_place_block(action, brick):
