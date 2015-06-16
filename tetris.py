@@ -133,8 +133,9 @@ def print_game_board():
                 pygame.draw.rect(gameDisplay, (255, 0, 0), ((225 + 22*(x+1))-(x*2), (20*(y+1) + 20), 18, 18), 0)
     pygame.display.update()
 
-def try_to_place_block(action, brick):
+def try_to_place_block(action):
     global game_board
+    global current_block
     global current_x_position
     global current_y_position
     taken_places_count = 0
@@ -151,17 +152,21 @@ def try_to_place_block(action, brick):
             if game_board[x][y] == 8:
                 taken_places_count = taken_places_count + 1
     #Placing block in place according to event
-    for y in range(4):
-        for x in range(4):
-            if action == 1:
-                if brick[x][y] is not 0:
-                    temp_game_board[x + current_x_position + 2][y + current_y_position + 1] = brick[x][y]
-            elif action == 2:
-                if brick[x][y] is not 0:
-                    temp_game_board[x + current_x_position + 3][y + current_y_position] = brick[x][y]
-            elif action == 3:
-                if brick[x][y] is not 0:
-                    temp_game_board[x + current_x_position + 1][y + current_y_position] = brick[x][y]
+    if action == 1:
+        for y in range(4):
+            for x in range(4):
+                if current_block[x][y] is not 0:
+                    temp_game_board[x + current_x_position + 2][y + current_y_position + 1] = current_block[x][y]
+    elif action == 2:
+        for y in range(4):
+            for x in range(4):
+                if current_block[x][y] is not 0:
+                    temp_game_board[x + current_x_position + 3][y + current_y_position] = current_block[x][y]
+    elif action == 3:
+        for y in range(4):
+            for x in range(4):
+                if current_block[x][y] is not 0:
+                    temp_game_board[x + current_x_position + 1][y + current_y_position] = current_block[x][y]
     #Checking if performed move is correct
     temp_border_count = 0
     temp_taken_places_count = 0
@@ -193,17 +198,17 @@ while not game_exit:
             game_exit = True
         if event.type == TIME_EVENT:
             print "Time"
-            try_to_place_block(1, current_block)
+            try_to_place_block(1)
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
                 print "Lewo"
-                try_to_place_block(3, current_block)
+                try_to_place_block(3)
             elif event.key == pygame.K_RIGHT:
                 print "Prawo"
-                try_to_place_block(2, current_block)
+                try_to_place_block(2)
             elif event.key == pygame.K_DOWN:
                 print "Dol"
-                try_to_place_block(1, current_block)
+                try_to_place_block(1)
             elif event.key == pygame.K_SPACE:
                 print "Rotacja"
             elif event.key == pygame.K_ESCAPE:
