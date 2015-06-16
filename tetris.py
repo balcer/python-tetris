@@ -33,16 +33,18 @@ def start_game():
     #Game state variables
     global current_x_position
     global current_y_position
+    global current_block_type
+    global current_block_rotation
+    global next_block_type
     global game_exit
     global gameDisplay
-    global current_block
-    global next_block
     current_x_position = 2
     current_y_position = 2
+    current_block_type = random.randint(1, 7)
+    current_block_rotation = 0
+    next_block_type = random.randint(1, 7)
     game_exit = False
     gameDisplay = pygame.display.set_mode((380, 445))
-    current_block = get_block(random.randint(1, 7), 0)
-    next_block = get_block(random.randint(1, 7), 0)
 
     pygame.init()
     pygame.display.set_caption('Tetris')
@@ -98,16 +100,18 @@ def get_block(type, rotation):
 
 def start_new_round():
     global game_board
-    global current_block
-    global next_block
     global current_x_position
     global current_y_position
+    global current_block_type
+    global current_block_rotation
+    global next_block_type
+    temp_block = get_block(current_block_type, current_block_rotation)
     for y in range(4):
         for x in range(4):
-            if current_block[x][y] != 0:
+            if temp_block[x][y] != 0:
                 game_board[current_x_position + x][current_y_position + y] = 8
-    current_block = next_block
-    next_block = get_block(random.randint(1, 7), 0)
+    current_block_type = next_block_type
+    current_block_rotation = 0
     current_x_position = 2
     current_y_position = 2
 
@@ -119,17 +123,19 @@ def print_game_board():
     pygame.draw.line(gameDisplay, (0, 0, 255), (20, 420), (220, 420), 1)
     pygame.draw.line(gameDisplay, (0, 0, 255), (220, 420), (220, 20), 1)
     temp_game_board = copy.deepcopy(game_board)
+    temp_block = get_block(current_block_type, current_block_rotation)
     for y in range(4):
         for x in range(4):
-            if current_block[x][y] != 0:
-                temp_game_board[current_x_position + x][current_y_position + y] = current_block[x][y]
+            if temp_block[x][y] != 0:
+                temp_game_board[current_x_position + x][current_y_position + y] = temp_block[x][y]
     for y in range(BOARD_Y_SIZE):
         for x in range(BOARD_X_SIZE):
             if temp_game_board[x][y] != 0 and y > 1:
                 pygame.draw.rect(gameDisplay, (255, 0, 0), ((22*(x+1))-(x*2), (20*(y+1)-39), 18, 18), 0)
+    temp_block == get_block(next_block_type, 0)
     for y in range(4):
         for x in range(4):
-            if next_block[x][y] != 0:
+            if temp_block[x][y] != 0:
                 pygame.draw.rect(gameDisplay, (255, 0, 0), ((225 + 22*(x+1))-(x*2), (20*(y+1) + 20), 18, 18), 0)
     pygame.display.update()
 
@@ -138,36 +144,58 @@ def try_to_place_block(action):
     global current_block
     global current_x_position
     global current_y_position
+    global current_block_type
+    global current_block_rotation
+    temp_block_rotation = current_block_rotation + 1
     taken_places_count = 0
+
     #Preparing temporary game board to check is move possible. Forbbiten places marked with 9
+
     temp_game_board = [[0 for x in range(BOARD_Y_SIZE + 2)] for x in range(BOARD_X_SIZE + 4)]
     for y in range(BOARD_Y_SIZE + 2):
         for x in range(BOARD_X_SIZE + 4):
             if x < 2 or x > 11 or y > 21:
                 temp_game_board[x][y] = 9
-    #Copping of actual game bord and counting taken places
+
+    #Copping actual game board and counting taken places
+
     for y in range(BOARD_Y_SIZE):
         for x in range(BOARD_X_SIZE):
             temp_game_board[x+2][y] = game_board[x][y]
             if game_board[x][y] == 8:
                 taken_places_count = taken_places_count + 1
+
     #Placing block in place according to event
+
     if action == 1:
+        temp_block = get_block(current_block_type, current_block_rotation)
         for y in range(4):
             for x in range(4):
-                if current_block[x][y] is not 0:
-                    temp_game_board[x + current_x_position + 2][y + current_y_position + 1] = current_block[x][y]
+                if temp_block[x][y] is not 0:
+                    temp_game_board[x + current_x_position + 2][y + current_y_position + 1] = temp_block[x][y]
     elif action == 2:
+        temp_block = get_block(current_block_type, current_block_rotation)
         for y in range(4):
             for x in range(4):
-                if current_block[x][y] is not 0:
-                    temp_game_board[x + current_x_position + 3][y + current_y_position] = current_block[x][y]
+                if temp_block[x][y] is not 0:
+                    temp_game_board[x + current_x_position + 3][y + current_y_position] = temp_block[x][y]
     elif action == 3:
+        temp_block = get_block(current_block_type, current_block_rotation)
         for y in range(4):
             for x in range(4):
-                if current_block[x][y] is not 0:
-                    temp_game_board[x + current_x_position + 1][y + current_y_position] = current_block[x][y]
+                if temp_block[x][y] is not 0:
+                    temp_game_board[x + current_x_position + 1][y + current_y_position] = temp_block[x][y]
+    elif action == 4:
+        if temp_block_rotation > 3:
+            temp_block_rotation = 0
+        temp_block = get_block(current_block_type, temp_block_rotation)
+        for y in range(4):
+            for x in range(4):
+                if temp_block[x][y] is not 0:
+                    temp_game_board[x + current_x_position + 2][y + current_y_position] = temp_block[x][y]
+
     #Checking if performed move is correct
+    
     temp_border_count = 0
     temp_taken_places_count = 0
     for y in range(BOARD_Y_SIZE + 2):
@@ -184,6 +212,8 @@ def try_to_place_block(action):
             current_x_position = current_x_position + 1
         elif action == 3:
             current_x_position = current_x_position - 1
+        elif action == 4:
+            current_block_rotation = temp_block_rotation
     else:
         if action == 1:
             start_new_round()
@@ -211,6 +241,7 @@ while not game_exit:
                 try_to_place_block(1)
             elif event.key == pygame.K_SPACE:
                 print "Rotacja"
+                try_to_place_block(4)
             elif event.key == pygame.K_ESCAPE:
                 game_exit = True
     print_game_board()
