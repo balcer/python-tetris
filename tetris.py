@@ -29,6 +29,27 @@ T_block1 = [[0, 0, 0, 0],[0, 0, 0, 0],[2, 2, 2, 0],[0, 2, 0, 0]]
 T_block2 = [[0, 0, 0, 0],[0, 2, 0, 0],[2, 2, 0, 0],[0, 2, 0, 0]]
 T_block3 = [[0, 0, 0, 0],[0, 2, 0, 0],[2, 2, 2, 0],[0, 0, 0, 0]]
 
+def start_game():
+    #Game state variables
+    global current_x_position
+    global current_y_position
+    global game_exit
+    global gameDisplay
+    global current_block
+    global next_block
+    current_x_position = 2
+    current_y_position = 2
+    game_exit = False
+    gameDisplay = pygame.display.set_mode((380, 445))
+    current_block = get_block(random.randint(1, 7), 0)
+    next_block = get_block(random.randint(1, 7), 0)
+
+    pygame.init()
+    pygame.display.set_caption('Tetris')
+    pygame.time.set_timer(TIME_EVENT, 1000)
+    global game_font
+    game_font = pygame.font.SysFont("monospace", 18)
+
 def get_block(type, rotation):
     if type == 1:
         return O_block
@@ -75,45 +96,6 @@ def get_block(type, rotation):
         else:
             return T_block3
 
-
-def pick_random_block():
-    a = random.randint(1, 7)
-    if a == 1:
-        return O_block
-    elif a == 2:
-        return I_block
-    elif a == 3:
-        return S_block
-    elif a == 4:
-        return Z_block
-    elif a == 5:
-        return L_block
-    elif a == 6:
-        return J_block
-    elif a == 7:
-        return T_block
-
-def start_game():
-    #Game state variables
-    global current_x_position
-    global current_y_position
-    global game_exit
-    global gameDisplay
-    global current_block
-    global next_block
-    current_x_position = 2
-    current_y_position = 2
-    game_exit = False
-    gameDisplay = pygame.display.set_mode((380, 445))
-    current_block = pick_random_block()
-    next_block = pick_random_block()
-
-    pygame.init()
-    pygame.display.set_caption('Tetris')
-    pygame.time.set_timer(TIME_EVENT, 1000)
-    global game_font
-    game_font = pygame.font.SysFont("monospace", 18)
-
 def start_new_round():
     global game_board
     global current_block
@@ -125,7 +107,7 @@ def start_new_round():
             if current_block[x][y] != 0:
                 game_board[current_x_position + x][current_y_position + y] = 8
     current_block = next_block
-    next_block = pick_random_block()
+    next_block = get_block(random.randint(1, 7), 0)
     current_x_position = 2
     current_y_position = 2
 
