@@ -8,7 +8,6 @@ BOARD_Y_SIZE = 22
 TIME_EVENT = pygame.USEREVENT+1
 
 def start_game():
-    #Game state variables
     global game_board
     global current_x_position
     global current_y_position
@@ -199,7 +198,6 @@ def try_to_place_block(action):
         if action == 1:
             start_new_round()
 
-    print temp_game_board
 
 start_game()
 
@@ -208,20 +206,15 @@ while not game_exit:
         if event.type == pygame.QUIT:
             game_exit = True
         if event.type == TIME_EVENT:
-            print "Time"
             try_to_place_block(1)
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                print "Lewo"
-                try_to_place_block(3)
-            elif event.key == pygame.K_RIGHT:
-                print "Prawo"
-                try_to_place_block(2)
-            elif event.key == pygame.K_DOWN:
-                print "Dol"
+            if event.key == pygame.K_DOWN:
                 try_to_place_block(1)
+            elif event.key == pygame.K_RIGHT:
+                try_to_place_block(2)
+            elif event.key == pygame.K_LEFT:
+                try_to_place_block(3)
             elif event.key == pygame.K_SPACE:
-                print "Rotacja"
                 try_to_place_block(4)
             elif event.key == pygame.K_ESCAPE:
                 game_exit = True
