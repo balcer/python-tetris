@@ -7,8 +7,6 @@ BOARD_Y_SIZE = 22
 
 TIME_EVENT = pygame.USEREVENT+1
 
-game_board = [[0 for x in range(BOARD_Y_SIZE)] for x in range(BOARD_X_SIZE)]
-
 def start_game():
     #Game state variables
     global game_board
@@ -19,6 +17,7 @@ def start_game():
     global next_block_type
     global game_exit
     global gameDisplay
+    game_board = [[0 for x in range(BOARD_Y_SIZE)] for x in range(BOARD_X_SIZE)]
     current_x_position = 2
     current_y_position = 2
     current_block_type = random.randint(1, 7)
