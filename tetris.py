@@ -91,6 +91,7 @@ def start_new_round():
             if temp_block[x][y] != 0:
                 game_board[current_x_position + x][current_y_position + y] = 8
     current_block_type = next_block_type
+    next_block_type = random.randint(1, 7)
     current_block_rotation = 0
     current_x_position = 2
     current_y_position = 2
@@ -112,7 +113,7 @@ def print_game_board():
         for x in range(BOARD_X_SIZE):
             if temp_game_board[x][y] != 0 and y > 1:
                 pygame.draw.rect(gameDisplay, (255, 0, 0), ((22*(x+1))-(x*2), (20*(y+1)-39), 18, 18), 0)
-    temp_block == get_block(next_block_type, 0)
+    temp_block = get_block(next_block_type, 0)
     for y in range(4):
         for x in range(4):
             if temp_block[x][y] != 0:
