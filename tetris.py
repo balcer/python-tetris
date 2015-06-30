@@ -5,7 +5,8 @@ import random
 BOARD_X_SIZE = 10
 BOARD_Y_SIZE = 22
 
-TIME_EVENT = pygame.USEREVENT+1
+GRAVITY_TIME_EVENT = pygame.USEREVENT+1
+KEY_TIME_EVENT = pygame.USEREVENT+2
 
 def start_game():
     global game_board
@@ -31,7 +32,8 @@ def start_game():
 
     pygame.init()
     pygame.display.set_caption('Tetris')
-    pygame.time.set_timer(TIME_EVENT, 1000)
+    pygame.time.set_timer(GRAVITY_TIME_EVENT, 600)
+    pygame.time.set_timer(KEY_TIME_EVENT, 60)
     global game_font
     game_font = pygame.font.SysFont("monospace", 18)
 
@@ -223,22 +225,24 @@ while game_exit == False and game_over == False:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_exit = True
-        if event.type == TIME_EVENT:
+        if event.type == GRAVITY_TIME_EVENT:
             try_to_place_block(1)
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_DOWN:
+        if event.type == KEY_TIME_EVENT:
+            keys = pygame.key.get_pressed()
+            if keys[pygame.K_DOWN]:
                 try_to_place_block(1)
-            elif event.key == pygame.K_RIGHT:
+            if keys[pygame.K_RIGHT]:
                 try_to_place_block(2)
-            elif event.key == pygame.K_LEFT:
+            if keys[pygame.K_LEFT]:
                 try_to_place_block(3)
-            elif event.key == pygame.K_SPACE:
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
                 try_to_place_block(4)
-            elif event.key == pygame.K_ESCAPE:
+            if event.key == pygame.K_ESCAPE:
                 game_exit = True
     print_game_board()
 
-while not game_exit:
+while game_exit == False:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             game_exit = True
