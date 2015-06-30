@@ -83,6 +83,22 @@ def get_block(type, rotation):
         else:
             return [[0, 0, 0, 0],[0, 2, 0, 0],[2, 2, 2, 0],[0, 0, 0, 0]]
 
+def clear_full_lines():
+    global game_board
+    for y in range(BOARD_Y_SIZE):
+        brick_count = 0
+        for x in range(BOARD_X_SIZE):
+            if game_board[x][y] != 0:
+                brick_count += 1
+        if brick_count == BOARD_X_SIZE:
+            remove_line(y)
+
+def remove_line(line):
+    global game_board
+    for y in range(line, 0, -1):
+        for x in range(BOARD_X_SIZE):
+            game_board[x][y] = game_board[x][y-1]
+
 def start_new_round():
     global game_board
     global current_x_position
@@ -96,6 +112,7 @@ def start_new_round():
         for x in range(4):
             if temp_block[x][y] != 0:
                 game_board[current_x_position + x][current_y_position + y] = 8
+    clear_full_lines()
     current_block_type = next_block_type
     next_block_type = random.randint(1, 7)
     current_block_rotation = 0
