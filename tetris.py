@@ -158,7 +158,7 @@ def try_to_place_block(action):
         for x in range(BOARD_X_SIZE):
             temp_game_board[x+2][y] = game_board[x][y]
             if game_board[x][y] == 8:
-                taken_places_count = taken_places_count + 1
+                taken_places_count += 1
 
     #Placing block in place according to event
 
@@ -196,20 +196,20 @@ def try_to_place_block(action):
     for y in range(BOARD_Y_SIZE + 2):
         for x in range(BOARD_X_SIZE + 4):
             if temp_game_board[x][y] == 9:
-                temp_border_count = temp_border_count + 1
+                temp_border_count += 1
             if temp_game_board[x][y] == 8:
-                temp_taken_places_count = temp_taken_places_count + 1
+                temp_taken_places_count += 1
     if temp_border_count == 116 and temp_taken_places_count == taken_places_count:
 
     #Taking apropiate actions
 
         if action == 1:
             new_round = False
-            current_y_position = current_y_position + 1
+            current_y_position += 1
         elif action == 2:
-            current_x_position = current_x_position + 1
+            current_x_position += 1
         elif action == 3:
-            current_x_position = current_x_position - 1
+            current_x_position -= 1
         elif action == 4:
             current_block_rotation = temp_block_rotation
     else:
