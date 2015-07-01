@@ -19,6 +19,7 @@ def start_game():
     global new_round
     global game_over
     global gameDisplay
+    global score
     game_board = [[0 for x in range(BOARD_Y_SIZE)] for x in range(BOARD_X_SIZE)]
     current_x_position = 2
     current_y_position = 2
@@ -29,7 +30,7 @@ def start_game():
     new_round = False
     game_over = False
     gameDisplay = pygame.display.set_mode((380, 445))
-
+    score = 0
     pygame.init()
     pygame.display.set_caption('Tetris')
     pygame.time.set_timer(GRAVITY_TIME_EVENT, 600)
@@ -85,6 +86,8 @@ def get_block(type, rotation):
 
 def clear_full_lines():
     global game_board
+    global score
+    removed_line_counter = 0
     for y in range(BOARD_Y_SIZE):
         brick_count = 0
         for x in range(BOARD_X_SIZE):
@@ -92,6 +95,15 @@ def clear_full_lines():
                 brick_count += 1
         if brick_count == BOARD_X_SIZE:
             remove_line(y)
+            removed_line_counter += 1
+    if removed_line_counter == 1:
+        score += 1
+    elif removed_line_counter  == 2:
+        score += 4
+    elif removed_line_counter == 3:
+        score += 8
+    elif removed_line_counter == 4:
+        score += 16
 
 def remove_line(line):
     global game_board
@@ -125,6 +137,10 @@ def print_game_board():
     gameDisplay.fill((0,0,0))
     label = game_font.render("Next block:", 1, (255,255,255))
     gameDisplay.blit(label, (240, 25))
+    label = game_font.render("Score:", 1, (255, 255, 255))
+    gameDisplay.blit(label, (240, 112))
+    label = game_font.render(str(score), 1, (255,255,255))
+    gameDisplay.blit(label, (240, 132))
     pygame.draw.line(gameDisplay, (0, 0, 255), (20, 20), (20, 420), 1)
     pygame.draw.line(gameDisplay, (0, 0, 255), (20, 420), (220, 420), 1)
     pygame.draw.line(gameDisplay, (0, 0, 255), (220, 420), (220, 20), 1)
