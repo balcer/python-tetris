@@ -274,6 +274,7 @@ while game_exit == False and game_over == False:
             if event.key == pygame.K_ESCAPE:
                 game_exit = True
     print_game_board()
+    pygame.time.wait(30)
 
 while game_exit == False:
     for event in pygame.event.get():
@@ -282,6 +283,7 @@ while game_exit == False:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
                 game_exit = True
+    pygame.time.wait(30)
 
 pygame.quit()
 quit()
