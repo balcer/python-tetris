@@ -1,6 +1,7 @@
 import pygame
 import copy
 import random
+import dbus
 
 BOARD_X_SIZE = 10
 BOARD_Y_SIZE = 22
@@ -20,6 +21,7 @@ def start_game():
     global game_over
     global gameDisplay
     global score
+    session_bus = dbus.SessionBus()
     game_board = [[0 for x in range(BOARD_Y_SIZE)] for x in range(BOARD_X_SIZE)]
     current_x_position = 2
     current_y_position = 2
