@@ -1,4 +1,5 @@
 import pygame
+import block
 import copy
 import random
 import dbus
@@ -40,52 +41,6 @@ def start_game():
     global game_font
     game_font = pygame.font.SysFont("monospace", 18)
 
-def get_block(type, rotation):
-    if type == 1:
-        return [[0, 0, 0, 0],[0, 2, 2, 0],[0, 2, 2, 0],[0, 0, 0, 0]]
-    if type == 2:
-        if rotation == 0 or rotation == 2:
-            return [[0, 2, 0, 0],[0, 2, 0, 0],[0, 2, 0, 0],[0, 2, 0, 0]]
-        else:
-            return [[0, 0, 0, 0],[0, 0, 0, 0],[2, 2, 2, 2],[0, 0, 0, 0]]
-    if type == 3:
-        if rotation == 0 or rotation == 2:
-            return [[0, 0, 0, 0],[0, 0, 2, 0],[0, 2, 2, 0],[0, 2, 0, 0]]
-        else:
-            return [[0, 0, 0, 0],[0, 0, 0, 0],[2, 2, 0, 0],[0, 2, 2, 0]]
-    if type == 4:
-        if rotation == 0 or rotation == 2:
-            return [[0, 0, 0, 0],[0, 2, 0, 0],[0, 2, 2 ,0],[0, 0, 2, 0]]
-        else:
-            return [[0, 0, 0, 0],[0, 0, 0, 0],[0, 2, 2, 0],[2, 2, 0, 0]]
-    if type == 5:
-        if rotation == 0:
-            return [[0, 0, 0, 0],[0, 2, 2, 0],[0, 2, 0, 0],[0, 2, 0, 0]]
-        elif rotation == 1:
-            return [[0, 0, 0, 0],[0, 0, 0, 0],[2, 2, 2, 0],[0, 0, 2, 0]]
-        elif rotation == 2:
-            return [[0, 0, 0, 0],[0, 2, 0, 0],[0, 2, 0, 0],[2, 2, 0, 0]]
-        else:
-            return [[0, 0, 0, 0],[2, 0, 0, 0],[2, 2, 2, 0],[0, 0, 0, 0]]
-    if type == 6:
-        if rotation == 0:
-            return [[0, 0, 0, 0],[0, 2, 0, 0],[0, 2, 0, 0],[0, 2, 2, 0]]
-        elif rotation == 1:
-            return [[0, 0, 0, 0],[0, 0, 0, 0],[2, 2, 2, 0],[2, 0, 0, 0]]
-        elif rotation == 2:
-            return [[0, 0, 0, 0],[2, 2, 0, 0],[0, 2, 0, 0],[0, 2, 0, 0]]
-        else:
-            return [[0 ,0 ,0 ,0],[0, 0, 2, 0],[2, 2, 2, 0],[0, 0, 0, 0]]
-    if type == 7:
-        if rotation == 0:
-            return [[0, 0, 0, 0],[0, 2, 0, 0],[0, 2, 2, 0],[0, 2, 0, 0]]
-        elif rotation == 1:
-            return [[0, 0, 0, 0],[0, 0, 0, 0],[2, 2, 2, 0],[0, 2, 0, 0]]
-        elif rotation == 2:
-            return [[0, 0, 0, 0],[0, 2, 0, 0],[2, 2, 0, 0],[0, 2, 0, 0]]
-        else:
-            return [[0, 0, 0, 0],[0, 2, 0, 0],[2, 2, 2, 0],[0, 0, 0, 0]]
-
 def clear_full_lines():
     global game_board
     global score
@@ -121,7 +76,7 @@ def start_new_round():
     global current_block_rotation
     global next_block_type
     global new_round
-    temp_block = get_block(current_block_type, current_block_rotation)
+    temp_block = block.get_block(current_block_type, current_block_rotation)
     for y in range(4):
         for x in range(4):
             if temp_block[x][y] != 0:
@@ -147,7 +102,7 @@ def print_game_board():
     pygame.draw.line(gameDisplay, (0, 0, 255), (20, 420), (220, 420), 1)
     pygame.draw.line(gameDisplay, (0, 0, 255), (220, 420), (220, 20), 1)
     temp_game_board = copy.deepcopy(game_board)
-    temp_block = get_block(current_block_type, current_block_rotation)
+    temp_block = block.get_block(current_block_type, current_block_rotation)
     for y in range(4):
         for x in range(4):
             if temp_block[x][y] != 0:
@@ -156,7 +111,7 @@ def print_game_board():
         for x in range(BOARD_X_SIZE):
             if temp_game_board[x][y] != 0 and y > 1:
                 pygame.draw.rect(gameDisplay, (255, 0, 0), ((22*(x+1))-(x*2), (20*(y+1)-39), 18, 18), 0)
-    temp_block = get_block(next_block_type, 0)
+    temp_block = block.get_block(next_block_type, 0)
     for y in range(4):
         for x in range(4):
             if temp_block[x][y] != 0:
@@ -198,19 +153,19 @@ def try_to_place_block(action):
     #Placing block in place according to event
 
     if action == 1:
-        temp_block = get_block(current_block_type, current_block_rotation)
+        temp_block = block.get_block(current_block_type, current_block_rotation)
         for y in range(4):
             for x in range(4):
                 if temp_block[x][y] is not 0:
                     temp_game_board[x + current_x_position + 2][y + current_y_position + 1] = temp_block[x][y]
     elif action == 2:
-        temp_block = get_block(current_block_type, current_block_rotation)
+        temp_block = block.get_block(current_block_type, current_block_rotation)
         for y in range(4):
             for x in range(4):
                 if temp_block[x][y] is not 0:
                     temp_game_board[x + current_x_position + 3][y + current_y_position] = temp_block[x][y]
     elif action == 3:
-        temp_block = get_block(current_block_type, current_block_rotation)
+        temp_block = block.get_block(current_block_type, current_block_rotation)
         for y in range(4):
             for x in range(4):
                 if temp_block[x][y] is not 0:
@@ -218,7 +173,7 @@ def try_to_place_block(action):
     elif action == 4:
         if temp_block_rotation > 3:
             temp_block_rotation = 0
-        temp_block = get_block(current_block_type, temp_block_rotation)
+        temp_block = block.get_block(current_block_type, temp_block_rotation)
         for y in range(4):
             for x in range(4):
                 if temp_block[x][y] is not 0:
