@@ -1,3 +1,12 @@
+from enum import Enum
+
+class PxType(Enum):
+    free = 0
+    forrbidden = 1
+    placed = 2
+    moving = 3
+
+
 class TetrisCore(object):
 
     BOARD_MARGIN = 2
