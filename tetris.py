@@ -1,8 +1,10 @@
 import pygame
-import block
 import copy
 import random
 import dbus
+import sender
+import segment
+import skylight_screen
 
 BOARD_X_SIZE = 10
 BOARD_Y_SIZE = 22
@@ -36,10 +38,56 @@ def start_game():
     score = 0
     pygame.init()
     pygame.display.set_caption('Tetris')
-    pygame.time.set_timer(GRAVITY_TIME_EVENT, 600)
+    pygame.time.set_timer(GRAVITY_TIME_EVENT, 60000)
     pygame.time.set_timer(KEY_TIME_EVENT, 60)
     global game_font
     game_font = pygame.font.SysFont("monospace", 18)
+
+def get_block(type, rotation):
+    if type == 1:
+        return [[0, 0, 0, 0],[0, 2, 2, 0],[0, 2, 2, 0],[0, 0, 0, 0]]
+    if type == 2:
+        if rotation == 0 or rotation == 2:
+            return [[0, 2, 0, 0],[0, 2, 0, 0],[0, 2, 0, 0],[0, 2, 0, 0]]
+        else:
+            return [[0, 0, 0, 0],[0, 0, 0, 0],[2, 2, 2, 2],[0, 0, 0, 0]]
+    if type == 3:
+        if rotation == 0 or rotation == 2:
+            return [[0, 0, 0, 0],[0, 0, 2, 0],[0, 2, 2, 0],[0, 2, 0, 0]]
+        else:
+            return [[0, 0, 0, 0],[0, 0, 0, 0],[2, 2, 0, 0],[0, 2, 2, 0]]
+    if type == 4:
+        if rotation == 0 or rotation == 2:
+            return [[0, 0, 0, 0],[0, 2, 0, 0],[0, 2, 2 ,0],[0, 0, 2, 0]]
+        else:
+            return [[0, 0, 0, 0],[0, 0, 0, 0],[0, 2, 2, 0],[2, 2, 0, 0]]
+    if type == 5:
+        if rotation == 0:
+            return [[0, 0, 0, 0],[0, 2, 2, 0],[0, 2, 0, 0],[0, 2, 0, 0]]
+        elif rotation == 1:
+            return [[0, 0, 0, 0],[0, 0, 0, 0],[2, 2, 2, 0],[0, 0, 2, 0]]
+        elif rotation == 2:
+            return [[0, 0, 0, 0],[0, 2, 0, 0],[0, 2, 0, 0],[2, 2, 0, 0]]
+        else:
+            return [[0, 0, 0, 0],[2, 0, 0, 0],[2, 2, 2, 0],[0, 0, 0, 0]]
+    if type == 6:
+        if rotation == 0:
+            return [[0, 0, 0, 0],[0, 2, 0, 0],[0, 2, 0, 0],[0, 2, 2, 0]]
+        elif rotation == 1:
+            return [[0, 0, 0, 0],[0, 0, 0, 0],[2, 2, 2, 0],[2, 0, 0, 0]]
+        elif rotation == 2:
+            return [[0, 0, 0, 0],[2, 2, 0, 0],[0, 2, 0, 0],[0, 2, 0, 0]]
+        else:
+            return [[0 ,0 ,0 ,0],[0, 0, 2, 0],[2, 2, 2, 0],[0, 0, 0, 0]]
+    if type == 7:
+        if rotation == 0:
+            return [[0, 0, 0, 0],[0, 2, 0, 0],[0, 2, 2, 0],[0, 2, 0, 0]]
+        elif rotation == 1:
+            return [[0, 0, 0, 0],[0, 0, 0, 0],[2, 2, 2, 0],[0, 2, 0, 0]]
+        elif rotation == 2:
+            return [[0, 0, 0, 0],[0, 2, 0, 0],[2, 2, 0, 0],[0, 2, 0, 0]]
+        else:
+            return [[0, 0, 0, 0],[0, 2, 0, 0],[2, 2, 2, 0],[0, 0, 0, 0]]
 
 def clear_full_lines():
     global game_board
@@ -102,7 +150,7 @@ def print_game_board():
     pygame.draw.line(gameDisplay, (0, 0, 255), (20, 420), (220, 420), 1)
     pygame.draw.line(gameDisplay, (0, 0, 255), (220, 420), (220, 20), 1)
     temp_game_board = copy.deepcopy(game_board)
-    temp_block = block.get_block(current_block_type, current_block_rotation)
+    temp_block = get_block(current_block_type, current_block_rotation)
     for y in range(4):
         for x in range(4):
             if temp_block[x][y] != 0:
@@ -111,7 +159,7 @@ def print_game_board():
         for x in range(BOARD_X_SIZE):
             if temp_game_board[x][y] != 0 and y > 1:
                 pygame.draw.rect(gameDisplay, (255, 0, 0), ((22*(x+1))-(x*2), (20*(y+1)-39), 18, 18), 0)
-    temp_block = block.get_block(next_block_type, 0)
+    temp_block = get_block(next_block_type, 0)
     for y in range(4):
         for x in range(4):
             if temp_block[x][y] != 0:
@@ -121,6 +169,25 @@ def print_game_board():
         label = game_font.render("GAME OVER", 1, (255,255,255))
         gameDisplay.blit(label, (120, 120))
     pygame.display.update()
+
+def print_game_board_on_skylight():
+    tetris_screen = skylight_screen.SkylightScreen()
+    smaller_board = [[0 for x in range(BOARD_Y_SIZE - 2)] for x in range(BOARD_X_SIZE)]
+    for y in xrange(BOARD_Y_SIZE - 2):
+        for x in xrange(BOARD_X_SIZE):
+            smaller_board[x][y] = game_board[x][y+2]
+    temp_block = block.get_block(current_block_type, current_block_rotation)
+    for y in range(4):
+        for x in range(4):
+            if temp_block[x][y] != 0:
+                smaller_board[current_x_position + x][current_y_position -2 + y] = temp_block[x][y]
+    for y in xrange(BOARD_Y_SIZE - 2):
+        for x in xrange(BOARD_X_SIZE):
+            if smaller_board[x][y] > 0:
+                smaller_board[x][y] = 255
+
+    tetris_screen.update(smaller_board)
+    #skylight_sender = sender.Sender("/dev/ttyUSB0", 115200)
 
 def try_to_place_block(action):
     global game_board
@@ -153,19 +220,19 @@ def try_to_place_block(action):
     #Placing block in place according to event
 
     if action == 1:
-        temp_block = block.get_block(current_block_type, current_block_rotation)
+        temp_block = get_block(current_block_type, current_block_rotation)
         for y in range(4):
             for x in range(4):
                 if temp_block[x][y] is not 0:
                     temp_game_board[x + current_x_position + 2][y + current_y_position + 1] = temp_block[x][y]
     elif action == 2:
-        temp_block = block.get_block(current_block_type, current_block_rotation)
+        temp_block = get_block(current_block_type, current_block_rotation)
         for y in range(4):
             for x in range(4):
                 if temp_block[x][y] is not 0:
                     temp_game_board[x + current_x_position + 3][y + current_y_position] = temp_block[x][y]
     elif action == 3:
-        temp_block = block.get_block(current_block_type, current_block_rotation)
+        temp_block = get_block(current_block_type, current_block_rotation)
         for y in range(4):
             for x in range(4):
                 if temp_block[x][y] is not 0:
@@ -173,7 +240,7 @@ def try_to_place_block(action):
     elif action == 4:
         if temp_block_rotation > 3:
             temp_block_rotation = 0
-        temp_block = block.get_block(current_block_type, temp_block_rotation)
+        temp_block = get_block(current_block_type, temp_block_rotation)
         for y in range(4):
             for x in range(4):
                 if temp_block[x][y] is not 0:
@@ -217,20 +284,29 @@ while game_exit == False and game_over == False:
             game_exit = True
         if event.type == GRAVITY_TIME_EVENT:
             try_to_place_block(1)
+            print_game_board()
+            print_game_board_on_skylight()
         if event.type == KEY_TIME_EVENT:
             keys = pygame.key.get_pressed()
             if keys[pygame.K_DOWN]:
                 try_to_place_block(1)
+                print_game_board()
+                print_game_board_on_skylight()
             if keys[pygame.K_RIGHT]:
                 try_to_place_block(2)
+                print_game_board()
+                print_game_board_on_skylight()
             if keys[pygame.K_LEFT]:
                 try_to_place_block(3)
+                print_game_board()
+                print_game_board_on_skylight()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 try_to_place_block(4)
+                print_game_board()
+                print_game_board_on_skylight()
             if event.key == pygame.K_ESCAPE:
                 game_exit = True
-    print_game_board()
     pygame.time.wait(30)
 
 while game_exit == False:
