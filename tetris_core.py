@@ -45,5 +45,16 @@ class TetrisCore(object):
             show_string += '\n'
         print(show_string)
 
+    def check_move(self):
+        forrbidden_pixels = 0
+        for y in xrange(self.y_size + self.BOARD_MARGIN * 2):
+            for x in xrange(self.x_size + self.BOARD_MARGIN * 2):
+                if self.game_board[x][y] == PxType.forrbidden:
+                    forrbidden_pixels += 1
+        if forrbidden_pixels == self.forrbidden_pixels:
+            return True
+
+
+
 my_tetris = TetrisCore(10, 22)
 my_tetris.show_raw_game_board()
