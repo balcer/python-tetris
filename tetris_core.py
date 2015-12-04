@@ -6,7 +6,6 @@ class PxType(Enum):
     placed = 2
     moving = 3
 
-
 class TetrisCore(object):
 
     BOARD_MARGIN = 2
@@ -33,7 +32,7 @@ class TetrisCore(object):
     def show_raw_game_board(self):
         show_string = ''
         for y in xrange(self.y_size + self.BOARD_MARGIN * 2):
-            for x in range(self.x_size + self.BOARD_MARGIN * 2):
+            for x in xrange(self.x_size + self.BOARD_MARGIN * 2):
                 pixel_value = self.game_board[x][y]
                 if pixel_value == 0:
                     show_string += ' . '
